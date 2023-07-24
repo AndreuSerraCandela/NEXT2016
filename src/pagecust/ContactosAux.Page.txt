@@ -1,0 +1,60 @@
+page 50011 ContactosAux
+{
+    Caption = 'Contactos Auxiliar';
+    InsertAllowed = false;
+    PageType = List;
+    SourceTable = 50001;
+    SourceTableView = SORTING (No.)
+                      ORDER(Ascending);
+
+    layout
+    {
+        area(content)
+        {
+            repeater(Group)
+            {
+                field("No."; "No.")
+                {
+                    Visible = false;
+                }
+                field("Code Customer"; "Code Customer")
+                {
+                }
+                field(CIF; CIF)
+                {
+                }
+                field(Name; Name)
+                {
+                }
+                field(Name2; Name2)
+                {
+                }
+                field(Email; Email)
+                {
+                }
+                field(ERROR; ERROR)
+                {
+                }
+                field(PROCESAR; PROCESAR)
+                {
+                }
+                field(TERMINADO; TERMINADO)
+                {
+                }
+                field("Fecha Carga"; "Fecha Carga")
+                {
+                }
+            }
+        }
+    }
+
+    actions
+    {
+    }
+
+    trigger OnOpenPage()
+    begin
+        SETRANGE(TERMINADO, FALSE);
+    end;
+}
+

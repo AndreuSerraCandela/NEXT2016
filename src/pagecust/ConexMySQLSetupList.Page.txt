@@ -1,0 +1,49 @@
+page 50000 "ConexMySQL Setup List"
+{
+    Caption = 'Lista conexiones';
+    CardPageID = "ConexMySQL Setup Card";
+    DeleteAllowed = false;
+    InsertAllowed = false;
+    PageType = List;
+    SourceTable = Table50000;
+
+    layout
+    {
+        area(content)
+        {
+            repeater(Group)
+            {
+                field(User; User)
+                {
+                }
+                field(Pwd; Pwd)
+                {
+                }
+                field(Server; Server)
+                {
+                    Caption = 'Workspace';
+                }
+                field(BDD; BDD)
+                {
+                    Caption = 'Base de Datos';
+                    Visible = false;
+                }
+                field(Port; Port)
+                {
+                    Visible = false;
+                }
+                field("Intercomp. Sales Acc."; "Intercomp. Sales Acc.")
+                {
+                }
+                field("Intercomp. Purchases Acc."; "Intercomp. Purchases Acc.")
+                {
+                }
+            }
+        }
+    }
+
+    actions
+    {
+    }
+}
+

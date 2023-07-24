@@ -1,0 +1,181 @@
+page 50601 "SII-Conf. Inf. Empresa SII"
+{
+    // //010617 SII Nuevo objeto
+    // EX-SIIv3 220518 Nuevo campo Periodo Trimestral
+    //                 Fecha Limite presentación AEAT
+
+    DeleteAllowed = true;
+    InsertAllowed = true;
+    PageType = Card;
+    SourceTable = 50605;
+
+    layout
+    {
+        area(content)
+        {
+            group(General)
+            {
+                field("Id. Empresa SII"; rec."Id. Empresa SII")
+                {
+                }
+                field("Ruta ficheros SII"; rec."Ruta ficheros SII")
+                {
+
+                    trigger OnAssistEdit()
+                    begin
+                        "Ruta ficheros SII" := GetPathFolder;
+                    end;
+                }
+                field("Ruta ficheros entregados SII"; rec."Ruta ficheros entregados SII")
+                {
+
+                    trigger OnAssistEdit()
+                    begin
+                        "Ruta ficheros entregados SII" := GetPathFolder;
+                    end;
+                }
+                field("Servidor FTP SII"; rec."Servidor FTP SII")
+                {
+                }
+                field("Ruta subida ficheros FTP SII"; rec."Ruta subida ficheros FTP SII")
+                {
+                }
+                field("Usuario FTP"; rec."Usuario FTP")
+                {
+                }
+                field("Contraseña FTP"; rec."Contraseña FTP")
+                {
+                }
+                field("Id versión SII"; rec."Id versión SII")
+                {
+                }
+                field("Tipo comunicación"; rec."Tipo comunicación")
+                {
+                }
+                field("NIF Declarante"; rec."NIF Declarante")
+                {
+                }
+                field("Apell. Nombre.- Razón social"; rec."Apell. Nombre.- Razón social")
+                {
+                }
+                field("NIF Representante legal"; rec."NIF Representante legal")
+                {
+                }
+                field("Nº registro envío autorización"; rec."Nº registro envío autorización")
+                {
+                }
+                field("Testeo Datos SII en registro"; rec."Testeo Datos SII en registro")
+                {
+                }
+                field("Periodo Trimestral"; rec."Periodo Trimestral")
+                {
+                }
+            }
+            group("Control procesos")
+            {
+                field("Procesar Facturas venta"; rec."Procesar Facturas venta")
+                {
+                }
+                field("Procesar Abonos venta"; rec."Procesar Abonos venta")
+                {
+                }
+                field("Procesar Facturas compra"; rec."Procesar Facturas compra")
+                {
+                }
+                field("Procesar Abonos compra"; rec."Procesar Abonos compra")
+                {
+                }
+                field("Procesar Bienes de inversión"; rec."Procesar Bienes de inversión")
+                {
+                }
+                field("Procesar Movimientos Contables"; rec."Procesar Movimientos Contables")
+                {
+                }
+                field("Obtener docs. desde fecha"; "Obtener docs. desde fecha")
+                {
+                }
+                field("Obtener docs. hasta fecha"; "Obtener docs. hasta fecha")
+                {
+                }
+                field("Generar fichero desde fecha"; "Generar fichero desde fecha")
+                {
+                }
+                field("Generar fichero hasta fecha"; "Generar fichero hasta fecha")
+                {
+                }
+                field("Enviar documentos desde fecha"; "Enviar documentos desde fecha")
+                {
+                }
+                field("Enviar documentos hasta fecha"; "Enviar documentos hasta fecha")
+                {
+                }
+                field("Ult. desde fecha Obtención"; "Ult. desde fecha Obtención")
+                {
+                    Editable = false;
+                }
+                field("Ult. hasta fecha Obtención"; "Ult. hasta fecha Obtención")
+                {
+                    Editable = false;
+                }
+                field("Ult. desde fecha generación"; "Ult. desde fecha generación")
+                {
+                    Editable = false;
+                }
+                field("Ult. hasta fecha generación"; "Ult. hasta fecha generación")
+                {
+                    Editable = false;
+                }
+                field("Ult. desde fecha Envío"; "Ult. desde fecha Envío")
+                {
+                    Editable = false;
+                }
+                field("Ult. hasta fecha Envío"; "Ult. hasta fecha Envío")
+                {
+                    Editable = false;
+                }
+                field("Fecha Limite presentacion AEAT"; "Fecha Limite presentacion AEAT")
+                {
+                }
+            }
+            group("Procesos automáticos")
+            {
+                field("Proceso obtención documentos"; "Proceso obtención documentos")
+                {
+                }
+                field("Proceso generación ficheros"; "Proceso generación ficheros")
+                {
+                }
+                field("Proceso envío a plataforma"; "Proceso envío a plataforma")
+                {
+                }
+            }
+        }
+    }
+
+    actions
+    {
+    }
+
+
+    procedure GetPathFolder() FolderText: Text[1024]
+    var
+        [RunOnClient]
+        FolderBrowserDialog: DotNet FolderBrowserDialog;
+        [RunOnClient]
+        DialagResult: DotNet DialogResult;
+        FolderName: Text[1024];
+    begin
+        CLEAR(FolderName);
+
+        FolderBrowserDialog := FolderBrowserDialog.FolderBrowserDialog;
+        FolderBrowserDialog.Description := 'Seleccione carpeta para configurar la ruta.';
+        FolderBrowserDialog.SelectedPath := '';
+        DialagResult := FolderBrowserDialog.ShowDialog;
+
+        IF DialagResult.CompareTo(DialagResult.OK) = 0 THEN
+            FolderName := FolderBrowserDialog.SelectedPath;
+
+        EXIT(FolderName);
+    end;
+}
+

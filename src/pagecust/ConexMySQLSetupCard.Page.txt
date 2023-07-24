@@ -1,0 +1,59 @@
+page 50001 "ConexMySQL Setup Card"
+{
+    Caption = 'Config. Integración JSON';
+    DeleteAllowed = false;
+    InsertAllowed = false;
+    PageType = Card;
+    SourceTable = Table50000;
+
+    layout
+    {
+        area(content)
+        {
+            group(Credenciales)
+            {
+                Caption = 'Credenciales';
+                field(User; User)
+                {
+                    Caption = 'User';
+                }
+                field(Pwd; Pwd)
+                {
+                    Caption = 'Password';
+                }
+                field(Server; Server)
+                {
+                    Caption = 'Server';
+                }
+                field(BDD; BDD)
+                {
+                    Visible = false;
+                }
+                field(Port; Port)
+                {
+                    Visible = false;
+                }
+                group(Intercompany)
+                {
+                    field("Intercomp. Sales Acc."; "Intercomp. Sales Acc.")
+                    {
+                    }
+                    field("Intercomp. Purchases Acc."; "Intercomp. Purchases Acc.")
+                    {
+                    }
+                }
+            }
+            part(; 50003)
+            {
+            }
+            part(; 50004)
+            {
+            }
+        }
+    }
+
+    actions
+    {
+    }
+}
+

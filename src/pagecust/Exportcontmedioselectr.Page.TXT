@@ -1,0 +1,252 @@
+
+page 50802 "Export. cont. medios electr."
+{
+    SourceTable = "G/L Register";
+
+    layout
+    {
+        area(content)
+        {
+            group(Opciones)
+            {
+                field(Ruta; Ruta)
+                {
+                    Caption = 'Ruta del fichero';
+                    Visible = false;
+
+                    trigger OnAssistEdit()
+                    begin
+                        CLEAR(CduFileMngt);
+                        Dir := CduFileMngt.SaveFileDialog('Seleccione cualquier arvhico de la ruta', 'Exportación fichero', 'XML|*.xml');
+                        IF STRLEN(Dir) > 0 THEN
+                            Ruta := CduFileMngt.GetDirectoryName(Dir) + '\';
+                    end;
+                }
+            }
+            repeater("Registros mov. contabilidad")
+            {
+                Editable = false;
+                //The GridLayout property is only supported on controls of type Grid
+                //GridLayout = Rows;
+                field("No."; rec."No.")
+                {
+                }
+                field("From Entry No."; rec."From Entry No.")
+                {
+                }
+                field("To Entry No."; rec."To Entry No.")
+                {
+                }
+                field("Creation Date"; rec."Creation Date")
+                {
+                }
+                field("Source Code"; rec."Source Code")
+                {
+                }
+                field("User ID"; rec."User ID")
+                {
+                }
+                field("Journal Batch Name"; rec."Journal Batch Name")
+                {
+                }
+                field("From VAT Entry No."; rec."From VAT Entry No.")
+                {
+                }
+                field("To VAT Entry No."; rec."To VAT Entry No.")
+                {
+                }
+                field(Reversed; rec.Reversed)
+                {
+                }
+                field("Tipo póliza"; rec."Tipo póliza")
+                {
+                }
+                field("Descripción póliza"; rec."Descripción póliza")
+                {
+                }
+            }
+        }
+    }
+
+    actions
+    {
+        area(processing)
+        {
+            action("Exportar catálogo")
+            {
+                Image = ElectronicRegister;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+
+                trigger OnAction()
+                begin
+                    ExportCatalogoMX(RstCuentas, 50800, Ruta + 'Catalogo.xml');
+                end;
+            }
+            action("Exportar balanza")
+            {
+                Image = ElectronicRegister;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+
+                trigger OnAction()
+                begin
+                    ExportBalanzaComprobacionMX(RstCuentas, 50801, Ruta + 'Balanza.xml');
+                end;
+            }
+            action("Exportar pólizas")
+            {
+                Image = ElectronicRegister;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+
+                trigger OnAction()
+                begin
+
+                    RstRegConta.COPYFILTERS(Rec);
+                    ExportPolizasMX(RstRegConta, 50802, Ruta + 'Polizas.xml');
+                end;
+            }
+        }
+    }
+
+    var
+        RstCuentas: Record "G/L Account";
+        RstRegConta: Record "G/L Register";
+        CduFileMngt: Codeunit 419;
+        Ruta: Text[1024];
+        Dir: Text[1024];
+        XmlBalanza: XMLport 50801;
+        XmlCatalogo: XMLport 50800;
+
+
+    procedure Export(var lRstCont: Record 5050; XMLPortID: Integer; FileName: Text[1024]): Boolean
+    var
+        TempBlob: Record 99008535;
+        FileManagement: Codeunit 419;
+        OutStr: OutStream;
+    begin
+        TempBlob.INIT;
+        TempBlob.Blob.CREATEOUTSTREAM(OutStr);
+        XMLPORT.EXPORT(XMLPortID, OutStr, lRstCont);
+        //PostProcessXMLDocument(TempBlob);
+        EXIT(FileManagement.BLOBExport(TempBlob, STRSUBSTNO('%1.XML', FileName), TRUE) <> '');
+    end;
+
+    local procedure PostProcessXMLDocument(var TempBlob: Record 99008535)
+    var
+        XMLDoc: Automation;
+        XMLNode: Automation;
+        InStr: InStream;
+        OutStr: OutStream;
+    begin
+        CREATE(XMLDoc, TRUE, TRUE);
+        TempBlob.Blob.CREATEINSTREAM(InStr);
+        XMLDoc.load(InStr);
+        XMLNode := XMLDoc.documentElement;
+        DeleteEmptyXMLNodes(XMLNode);
+        CLEAR(TempBlob);
+        TempBlob.Blob.CREATEOUTSTREAM(OutStr);
+        XMLDoc.save(OutStr);
+    end;
+
+    local procedure DeleteEmptyXMLNodes(var XMLNode: Automation)
+    var
+        XMLChildNode: Automation;
+        XMLDomNodeList: Automation;
+        i: Integer;
+    begin
+        IF XMLNode.nodeTypeString = 'element' THEN BEGIN
+            IF NOT XMLNode.hasChildNodes THEN BEGIN
+                IF (XMLNode.xml = '<' + XMLNode.nodeName + ' xmlns="' + XMLNode.namespaceURI + '"/>') THEN
+                    XMLNode := XMLNode.parentNode.removeChild(XMLNode);
+            END ELSE BEGIN
+                XMLDomNodeList := XMLNode.childNodes;
+                FOR i := 1 TO XMLDomNodeList.length DO BEGIN
+                    XMLChildNode := XMLDomNodeList.nextNode();
+                    DeleteEmptyXMLNodes(XMLChildNode);
+                END;
+                IF NOT XMLNode.hasChildNodes THEN
+                    XMLNode := XMLNode.parentNode.removeChild(XMLNode);
+            END;
+        END;
+    end;
+
+
+    procedure ExportCatalogoMX(var lRstCuentas: Record "15"; XMLPortID: Integer; FileName: Text[1024]): Boolean
+    var
+        TempBlob: Record "99008535";
+        FileManagement: Codeunit "419";
+        OutStr: OutStream;
+    begin
+        CLEAR(XmlCatalogo);
+        TempBlob.INIT;
+        TempBlob.Blob.CREATEOUTSTREAM(OutStr);
+        XmlCatalogo.SETTABLEVIEW(lRstCuentas);
+        XmlCatalogo.SETDESTINATION(OutStr);
+        XmlCatalogo.RUN;
+        //XMLPORT.EXPORT(XMLPortID,OutStr,lRstCuentas);
+        //PostProcessXMLDocument(TempBlob);
+        //EXIT(FileManagement.BLOBExport(TempBlob,FileName,TRUE) <> '');
+    end;
+
+
+    procedure ExportBalanzaComprobacionMX(var lRstCuentas: Record "15"; XMLPortID: Integer; FileName: Text[1024]): Boolean
+    var
+        TempBlob: Record "99008535";
+        FileManagement: Codeunit "File Management";
+        OutStr: OutStream;
+    begin
+        CLEAR(XmlBalanza);
+        TempBlob.INIT;
+        TempBlob.Blob.CREATEOUTSTREAM(OutStr);
+        //XMLPORT.EXPORT(XMLPortID,OutStr,lRstCuentas);
+        XmlBalanza.SETTABLEVIEW(lRstCuentas);
+        XmlBalanza.SETDESTINATION(OutStr);
+
+        XmlBalanza.RUN;
+        //PostProcessXMLDocument(TempBlob);
+        //EXIT(FileManagement.BLOBExport(TempBlob,FileName,TRUE) <> '');
+    end;
+
+
+    procedure ExportPolizasMX(var lRstRegConta: Record "G/L Register"; XMLPortID: Integer; FileName: Text[1024]): Boolean
+    var
+        TempBlob: Record TempBlob;
+        FileManagement: Codeunit "File Management";
+        OutStr: OutStream;
+    begin
+        TempBlob.INIT;
+        TempBlob.Blob.CREATEOUTSTREAM(OutStr);
+        XMLPORT.EXPORT(XMLPortID, OutStr, lRstRegConta);
+        //PostProcessXMLDocument(TempBlob);
+        EXIT(FileManagement.BLOBExport(TempBlob, FileName, TRUE) <> '');
+    end;
+
+
+    procedure SeleccionRuta() lValor: Text[250]
+    var
+        lShellControl: Automation;
+        lFolder: Automation;
+        lMSCommonDialog: Integer;
+    begin
+        //EX-SGG 0611414 No compila por OCX lMSCommonDialog se cambia a interger
+        /*
+        CLEAR(lValor);
+        IF ISCLEAR(lShellControl) THEN
+          CREATE(lShellControl);
+        
+        lFolder := lShellControl.BrowseForFolder(0,'Seleccione un directorio',0);
+        
+        IF NOT ISCLEAR (lFolder) THEN
+         lValor:=FORMAT(lFolder.Items().Item.Path + '\');
+        
+        CLEAR(lShellControl);
+        */
+
+    end;
+}
+

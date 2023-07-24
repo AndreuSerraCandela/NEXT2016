@@ -1,0 +1,143 @@
+page 50608 "Company Information 2"
+{
+    PageType = List;
+    SourceTable = Table50605;
+
+    layout
+    {
+        area(content)
+        {
+            repeater(Group)
+            {
+                field("Primary Key"; "Primary Key")
+                {
+                }
+                field(Name; Name)
+                {
+                }
+                field("Id. Empresa SII"; "Id. Empresa SII")
+                {
+                }
+                field("Ruta ficheros SII"; "Ruta ficheros SII")
+                {
+                }
+                field("Ruta ficheros entregados SII"; "Ruta ficheros entregados SII")
+                {
+                }
+                field("Servidor FTP SII"; "Servidor FTP SII")
+                {
+                }
+                field("Ruta subida ficheros FTP SII"; "Ruta subida ficheros FTP SII")
+                {
+                }
+                field("Usuario FTP"; "Usuario FTP")
+                {
+                }
+                field("Contraseña FTP"; "Contraseña FTP")
+                {
+                }
+                field("Id versión SII"; "Id versión SII")
+                {
+                }
+                field("Tipo comunicación"; "Tipo comunicación")
+                {
+                }
+                field("NIF Declarante"; "NIF Declarante")
+                {
+                }
+                field("Apell. Nombre.- Razón social"; "Apell. Nombre.- Razón social")
+                {
+                }
+                field("NIF Representante legal"; "NIF Representante legal")
+                {
+                }
+                field(Ejercicio; Ejercicio)
+                {
+                }
+                field(Periodo; Periodo)
+                {
+                }
+                field("Nº registro envío autorización"; "Nº registro envío autorización")
+                {
+                }
+                field("Obtener docs. desde fecha"; "Obtener docs. desde fecha")
+                {
+                }
+                field("Obtener docs. hasta fecha"; "Obtener docs. hasta fecha")
+                {
+                }
+                field("Generar fichero desde fecha"; "Generar fichero desde fecha")
+                {
+                }
+                field("Generar fichero hasta fecha"; "Generar fichero hasta fecha")
+                {
+                }
+                field("Enviar documentos desde fecha"; "Enviar documentos desde fecha")
+                {
+                }
+                field("Enviar documentos hasta fecha"; "Enviar documentos hasta fecha")
+                {
+                }
+                field("Ult. desde fecha Obtención"; "Ult. desde fecha Obtención")
+                {
+                }
+                field("Ult. hasta fecha Obtención"; "Ult. hasta fecha Obtención")
+                {
+                }
+                field("Ult. desde fecha generación"; "Ult. desde fecha generación")
+                {
+                }
+                field("Ult. hasta fecha generación"; "Ult. hasta fecha generación")
+                {
+                }
+                field("Ult. desde fecha Envío"; "Ult. desde fecha Envío")
+                {
+                }
+                field("Ult. hasta fecha Envío"; "Ult. hasta fecha Envío")
+                {
+                }
+                field("Procesar Facturas venta"; "Procesar Facturas venta")
+                {
+                }
+                field("Procesar Abonos venta"; "Procesar Abonos venta")
+                {
+                }
+                field("Procesar Facturas compra"; "Procesar Facturas compra")
+                {
+                }
+                field("Procesar Abonos compra"; "Procesar Abonos compra")
+                {
+                }
+                field("Procesar Bienes de inversión"; "Procesar Bienes de inversión")
+                {
+                }
+                field("Proceso obtención documentos"; "Proceso obtención documentos")
+                {
+                }
+                field("Proceso generación ficheros"; "Proceso generación ficheros")
+                {
+                }
+                field("Proceso envío a plataforma"; "Proceso envío a plataforma")
+                {
+                }
+                field("Testeo Datos SII en registro"; "Testeo Datos SII en registro")
+                {
+                }
+                field("Procesar Movimientos Contables"; "Procesar Movimientos Contables")
+                {
+                }
+                field("Periodo Trimestral"; "Periodo Trimestral")
+                {
+                }
+                field("Fecha Limite presentacion AEAT"; "Fecha Limite presentacion AEAT")
+                {
+                }
+            }
+        }
+    }
+
+    actions
+    {
+    }
+}
+
