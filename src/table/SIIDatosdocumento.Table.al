@@ -173,7 +173,7 @@ table 50603 "SII- Datos documento"
         IF NOT DatosDocSII.FINDFIRST THEN BEGIN
             GLEntry.RESET;
             GLEntry.SETRANGE("Document No.", "No. Documento");
-            CASE "Tipo documento" OF
+            CASE "Tipo documento".AsInteger() OF
                 2, 6:
                     GLEntry.SETRANGE("Document Type", GLEntry."Document Type"::Invoice);
                 3, 7:
@@ -202,12 +202,12 @@ table 50603 "SII- Datos documento"
 
     local procedure CompruebaEstadoSIIDoc()
     var
-        lRstFacV: Record "112";
-        lRstFacC: Record "122";
-        lRstAboV: Record "114";
-        lRstAboC: Record "124";
-        lRstValSII: Recor "SII- Tablas valores SII";
-        GLEntry: Recor  "G/L Entry";
+        lRstFacV: Record 112;
+        lRstFacC: Record 122;
+        lRstAboV: Record 114;
+        lRstAboC: Record 124;
+        lRstValSII: Record "SII- Tablas valores SII";
+        GLEntry: Record "G/L Entry";
     begin
         //200717 EX-JVN SII
         GLEntry.RESET;
@@ -215,7 +215,7 @@ table 50603 "SII- Datos documento"
         GLEntry.SETRANGE("Document No.", "No. Documento");
         //200717 fin
 
-        CASE "Tipo documento" OF
+        CASE "Tipo documento".AsInteger() OF
             2:
                 BEGIN
                     IF lRstFacV.GET("No. Documento") THEN BEGIN
@@ -224,7 +224,7 @@ table 50603 "SII- Datos documento"
                         //200717 EX-JVN SII
                     END ELSE BEGIN
                         GLEntry.SETRANGE("Document Type", GLEntry."Document Type"::Invoice);
-                        GLEntry.SETRANGE("SII Filtro Tipo Doc.", GLEntry."SII Filtro Tipo Doc."::Factura);
+                        GLEntry.SETRANGE("SII Filtro Tipo Doc.", GLEntry."SII Filtro Tipo Doc."::"Factura emitida");
                         GLEntry.SETRANGE("SII Filtro Origen Doc.", GLEntry."SII Filtro Origen Doc."::Emitida);
                         IF GLEntry.FINDFIRST THEN BEGIN
                             GLEntry.CALCFIELDS("SII Estado documento");
@@ -241,7 +241,7 @@ table 50603 "SII- Datos documento"
                         //200717 EX-JVN SII
                     END ELSE BEGIN
                         GLEntry.SETRANGE("Document Type", GLEntry."Document Type"::"Credit Memo");
-                        GLEntry.SETRANGE("SII Filtro Tipo Doc.", GLEntry."SII Filtro Tipo Doc."::Abono);
+                        GLEntry.SETRANGE("SII Filtro Tipo Doc.", GLEntry."SII Filtro Tipo Doc."::"Abono emitido");
                         GLEntry.SETRANGE("SII Filtro Origen Doc.", GLEntry."SII Filtro Origen Doc."::Emitida);
                         IF GLEntry.FINDFIRST THEN BEGIN
                             GLEntry.CALCFIELDS("SII Estado documento");
@@ -258,7 +258,7 @@ table 50603 "SII- Datos documento"
                         //200717 EX-JVN SII
                     END ELSE BEGIN
                         GLEntry.SETRANGE("Document Type", GLEntry."Document Type"::Invoice);
-                        GLEntry.SETRANGE("SII Filtro Tipo Doc.", GLEntry."SII Filtro Tipo Doc."::Factura);
+                        GLEntry.SETRANGE("SII Filtro Tipo Doc.", GLEntry."SII Filtro Tipo Doc."::"Factura recibida");
                         GLEntry.SETRANGE("SII Filtro Origen Doc.", GLEntry."SII Filtro Origen Doc."::Recibida);
                         IF GLEntry.FINDFIRST THEN BEGIN
                             GLEntry.CALCFIELDS("SII Estado documento");
@@ -275,7 +275,7 @@ table 50603 "SII- Datos documento"
                         //200717 EX-JVN SII
                     END ELSE BEGIN
                         GLEntry.SETRANGE("Document Type", GLEntry."Document Type"::"Credit Memo");
-                        GLEntry.SETRANGE("SII Filtro Tipo Doc.", GLEntry."SII Filtro Tipo Doc."::Abono);
+                        GLEntry.SETRANGE("SII Filtro Tipo Doc.", GLEntry."SII Filtro Tipo Doc."::"Abono recibido");
                         GLEntry.SETRANGE("SII Filtro Origen Doc.", GLEntry."SII Filtro Origen Doc."::Recibida);
                         IF GLEntry.FINDFIRST THEN BEGIN
                             GLEntry.CALCFIELDS("SII Estado documento");

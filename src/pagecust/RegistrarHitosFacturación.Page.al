@@ -1,3 +1,6 @@
+/// <summary>
+/// Page Registrar Hitos Facturación (ID 50002).
+/// </summary>
 page 50002 "Registrar Hitos Facturación"
 {
     InsertAllowed = false;
@@ -130,7 +133,7 @@ page 50002 "Registrar Hitos Facturación"
 
                     recSaleHeader.MARKEDONLY(TRUE);
                     rptFactLotes.SETTABLEVIEW(recSaleHeader);
-                    rptFactLotes.InitializeRequest(TRUE, TRUE, 0D, FALSE, FALSE, FALSE);
+                    rptFactLotes.InitializeRequest(TRUE, TRUE, 0D, 0D, false, FALSE, FALSE, FALSE);
                     rptFactLotes.RUNMODAL;
                     recSaleHeader.CLEARMARKS;
                 end;

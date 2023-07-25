@@ -1,3 +1,6 @@
+/// <summary>
+/// TableExtension ContactEx (ID 92050) extends Record Contact //5050.
+/// </summary>
 tableextension 92050 ContactEx extends Contact //5050
 {
     fields
@@ -92,18 +95,7 @@ tableextension 92077 SegmentLineEx extends "Segment Line" //5077
     var
         myInt: Integer;
 }
-tableextension 92079 MarketingSetupEx extends "Marketing Setup" //5079
-{
-    fields
-    {
-        field(90000; "Default Salesperson Code 2"; Code[20])
-        {
-            DataClassification = ToBeClassified;
-            TableRelation = "Salesperson/Purchaser";
-        }
-    }
 
-}
 tableextension 92080 ToDo extends "To-do" //5080
 {
     fields
@@ -279,7 +271,7 @@ tableextension 92202 ServiceHeaderEx extends "Service Header" //5900
 {
     fields
     {
-        field(50600; "SII Estado documento"; Option)
+        field(50600; "SII Estado documento"; Enum "Sii Estado Documento")
         {
             CalcFormula = Lookup("SII- Datos SII Documentos"."Estado documento" WHERE("Tipo documento" = FILTER('Factura'),
                                                                                        "No. documento" = FIELD("No."),
@@ -287,8 +279,8 @@ tableextension 92202 ServiceHeaderEx extends "Service Header" //5900
             Description = 'AHG - SII 30/05/17  Nuevos campos Informativos  y de filtros para tratamient6o de SII';
             Editable = false;
             FieldClass = FlowField;
-            OptionCaption = ' ,Pendiente procesar,Incluido en fichero,Enviado a plataforma,Incidencias,Obtener de nuevo,Validado AEAT';
-            OptionMembers = " ","Pendiente procesar","Incluido en fichero","Enviado a plataforma",Incidencias,"Obtener de nuevo","Validado AEAT";
+            // OptionCaption = ' ,Pendiente procesar,Incluido en fichero,Enviado a plataforma,Incidencias,Obtener de nuevo,Validado AEAT';
+            // OptionMembers = " ","Pendiente procesar","Incluido en fichero","Enviado a plataforma",Incidencias,"Obtener de nuevo","Validado AEAT";
         }
         field(50601; "SII Fecha envío a control"; Date)
         {
@@ -317,6 +309,9 @@ tableextension 92203 ServiceLineEx extends "Service Line" //5902
     //SIIInsertarDatosMultiple
 
 
+    /// <summary>
+    /// SIIInsertarDatosMultiple.
+    /// </summary>
     procedure SIIInsertarDatosMultiple()
     var
         lRstTblValSII: Record 50600;
@@ -391,6 +386,49 @@ tableextension 92207 ServiceInvoiceHeaderEx extends "Service Invoice Header" //5
             DataClassification = ToBeClassified;
             TableRelation = "Salesperson/Purchaser";
         }
+
+        field(50600; "SII Estado documento"; Enum "SII Estado documento")
+        {
+            FieldClass = FlowField;
+            CalcFormula = Lookup("SII- Datos SII Documentos"."Estado documento" WHERE("Tipo documento" = FILTER(Factura),
+                                    "No. documento" = FIELD("No."),
+                                    "Origen documento" = FILTER(Emitida)));
+            //OptionCaptionML = ESP=" ,Pendiente procesar,Incluido en fichero,Enviado a plataforma,Incidencias,Obtener de nuevo,Validado AEAT";
+            //OptionString = [ ,Pendiente procesar,Incluido en fichero,Enviado a plataforma,Incidencias,Obtener de nuevo,Validado AEAT];
+            Description = 'AHG - SII 30/05/17  Nuevos campos Informativos  y de filtros para tratamient6o de SII';
+            Editable = false;
+        }
+
+        field(50601; "SII Fecha envío a control"; Date)
+        {
+            Description = 'AHG - SII 30/05/17  Nuevos campos Informativos  y de filtros para tratamient6o de SII';
+            trigger OnValidate()
+            var
+                RstValSII: Record 50600;
+            BEGIN
+                RstValSII.PermitirModificarDoc("SII Estado documento", TRUE); //EX-SGG 180717
+
+                //030817 EX-JVN SII
+                IF "SII Fecha envío a control" < Rec."Posting Date" THEN
+                    ERROR('La Fecha envío a control no puede ser inferior a la fecha de registro.');
+            END;
+
+
+
+        }
+
+        field(50602; "SII Excluir envío"; Boolean)
+        {
+            Description = 'AHG - SII 30/05/17  Nuevos campos Informativos  y de filtros para tratamient6o de SII';
+            trigger OnValidate()
+            var
+                RstValSII: Record 50600;
+            BEGIN
+                RstValSII.PermitirModificarDoc("SII Estado documento", TRUE); //EX-SGG 180717
+            END;
+
+
+        }
     }
 
     var
@@ -401,7 +439,7 @@ tableextension 92208 ServiceCrMemoHeaderEx extends "Service Cr.Memo Header" //59
     fields
     {
         // Add changes to table fields here
-        field(50600; "SII Estado documento"; Option)
+        field(50600; "SII Estado documento"; Enum "Sii Estado Documento")
         {
             CalcFormula = Lookup("SII- Datos SII Documentos"."Estado documento" WHERE("Tipo documento" = FILTER('Abono'),
                                                                                        "No. documento" = FIELD("No."),
@@ -409,8 +447,8 @@ tableextension 92208 ServiceCrMemoHeaderEx extends "Service Cr.Memo Header" //59
             Description = 'AHG - SII 30/05/17  Nuevos campos Informativos  y de filtros para tratamient6o de SII';
             Editable = false;
             FieldClass = FlowField;
-            OptionCaption = ' ,Pendiente procesar,Incluido en fichero,Enviado a plataforma,Incidencias,Obtener de nuevo,Validado AEAT';
-            OptionMembers = " ","Pendiente procesar","Incluido en fichero","Enviado a plataforma",Incidencias,"Obtener de nuevo","Validado AEAT";
+            //OptionCaption = ' ,Pendiente procesar,Incluido en fichero,Enviado a plataforma,Incidencias,Obtener de nuevo,Validado AEAT';
+            //OptionMembers = " ","Pendiente procesar","Incluido en fichero","Enviado a plataforma",Incidencias,"Obtener de nuevo","Validado AEAT";
         }
         field(50601; "SII Fecha envío a control"; Date)
         {

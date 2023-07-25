@@ -378,7 +378,7 @@ table 50601 "SII- Datos SII Documentos"
         field(303; "CC Medio pago SII"; Code[2])
         {
             Description = 'Medio pago para Criterio de caja';
-            TableRelation = "SII- Tablas valores SII".Valor WHERE("Id. tabla" = FILTER(L11));
+            TableRelation = "SII- Tablas valores SII".Valor WHERE("Id. tabla" = FILTER('L11'));
         }
         field(304; "Factura SinIdentifDestinatario"; Code[1])
         {

@@ -28,7 +28,7 @@ tableextension 92015 GlAccount extends "G/L Account"
 
         //                                                Description=SF-MLA Llevar retenci¢n a Impresi¢n de facturas Netex }
         // { 50600;  ;Excluir SII         ;Boolean       ;Description=SII }
-        field(50600; ExcluirSII; Boolean)
+        field(50600; "Excluir SII"; Boolean)
         {
             Description = 'SII';
         }

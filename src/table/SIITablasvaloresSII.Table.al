@@ -487,6 +487,11 @@ table 50600 "SII- Tablas valores SII"
 
     end;
 
+    /// <summary>
+    /// MostrarDatosDocumento.
+    /// </summary>
+    /// <param name="TipoDocumento">Integer.</param>
+    /// <param name="NoDocumento">Code[20].</param>
     procedure MostrarDatosDocumento(TipoDocumento: Integer; NoDocumento: Code[20])
     var
         RecSIIDatosDocumento: Record "SII- Datos documento";
@@ -912,7 +917,7 @@ table 50600 "SII- Tablas valores SII"
                         RecDatosSIIAProcesar."Origen documento" := RecDatosSIIAProcesar."Origen documento"::Emitida;
                         RecDatosSIIAProcesar."Tipo documento" := RecDatosSIIAProcesar."Tipo documento"::Factura;
                         RecDatosSIIAProcesar."Estado documento" := RecDatosSIIAProcesar."Estado documento"::"Pendiente procesar";
-                        IF CamposObligatorios(13, RecDatosSIIAProcesar."Origen documento", NoDocumento,
+                        IF CamposObligatorios("Sii Tipos Documento"::"Factura servicios", RecDatosSIIAProcesar."Origen documento", NoDocumento,
                                               RecDatosSIIAProcesar."Log. incidencias") THEN
                             RecDatosSIIAProcesar.VALIDATE("Estado documento", RecDatosSIIAProcesar."Estado documento"::Incidencias);
 
@@ -977,7 +982,7 @@ table 50600 "SII- Tablas valores SII"
                         RecDatosSIIAProcesar."Origen documento" := RecDatosSIIAProcesar."Origen documento"::Emitida;
                         RecDatosSIIAProcesar."Tipo documento" := RecDatosSIIAProcesar."Tipo documento"::Abono;
                         RecDatosSIIAProcesar."Estado documento" := RecDatosSIIAProcesar."Estado documento"::"Pendiente procesar";
-                        IF CamposObligatorios(14, RecDatosSIIAProcesar."Origen documento", NoDocumento,
+                        IF CamposObligatorios("Sii Tipos Documento"::"Abono Servicios", RecDatosSIIAProcesar."Origen documento", NoDocumento,
                                               RecDatosSIIAProcesar."Log. incidencias") THEN
                             RecDatosSIIAProcesar.VALIDATE("Estado documento", RecDatosSIIAProcesar."Estado documento"::Incidencias);
 
@@ -1371,7 +1376,7 @@ table 50600 "SII- Tablas valores SII"
     end;
 
 
-    procedure ObtenerDetallesDocumentos(TipoDocumento: Integer; NoDocumento: Code[20]; var RecCabeceraDatosSII: Record "50601")
+    procedure ObtenerDetallesDocumentos(TipoDocumento: Integer; NoDocumento: Code[20]; var RecCabeceraDatosSII: Record 50601)
     var
         RecDatosSIIAProcesarDet: Record 50601;
         NoMov: Integer;
@@ -2922,9 +2927,9 @@ table 50600 "SII- Tablas valores SII"
     end;
 
 
-    procedure GenerarFicheros(var Par_RecDocsSIIaProcesar: Record "50601")
+    procedure GenerarFicheros(var Par_RecDocsSIIaProcesar: Record 50601)
     var
-        RecConfigEmpresa: Record "50605";
+        RecConfigEmpresa: Record 50605;
         OutFileEmitidas: File;
         ExternalFileEmitidas: Text[1024];
         OutFileRecibidas: File;
@@ -2935,20 +2940,20 @@ table 50600 "SII- Tablas valores SII"
         varSpace: Char;
         txtTab: Text[1];
         txtSpace: Text[1];
-        RecDatoSIICabecera: Record "50601";
+        RecDatoSIICabecera: Record 50601;
         "---------": Integer;
-        RecDocsSIIaProcesar: Record "50601" temporary;
-        RecDocsSIIaProcesar2: Record "50601" temporary;
+        RecDocsSIIaProcesar: Record 50601 temporary;
+        RecDocsSIIaProcesar2: Record 50601 temporary;
         NLinea: Integer;
         LineaCabecerasTexto: Text[1024];
         FechaExport: DateTime;
-        RecCabFactCompra: Record "122";
-        RecCabAboCompra: Record "124";
+        RecCabFactCompra: Record 122;
+        RecCabAboCompra: Record 124;
         NumFacturaProv: Text[30];
         VarTime: Text[7];
-        CandidatosRecDocsSIIaProcesar: Record "50601";
-        RecCabFacCompFechaExp: Record "122";
-        RecCabAboCompFechaExp: Record "124";
+        CandidatosRecDocsSIIaProcesar: Record 50601;
+        RecCabFacCompFechaExp: Record 122;
+        RecCabAboCompFechaExp: Record 124;
         FechaExpedicion: Date;
         lrec_Customer: Record Customer;
         lrec_Vendor: Record Vendor;
@@ -2956,7 +2961,7 @@ table 50600 "SII- Tablas valores SII"
         "---": Integer;
         FilePlataforma: File;
         vName: Text[30];
-        recControlSIIDocumentos: Record "50601";
+        recControlSIIDocumentos: Record 50601;
         pathhistorico: Text;
     begin
 
@@ -3502,7 +3507,15 @@ table 50600 "SII- Tablas valores SII"
     end;
 
 
-    procedure CamposObligatorios(TipoDocumento: Option Factura,Abono,"B.I."; OrigenDocumento: Option Emitida,Recibida,"B.I."; NoDocumento: Code[20]; var TextoError: Text[250]) HayError: Boolean
+    /// <summary>
+    /// CamposObligatorios.
+    /// </summary>
+    /// <param name="TipoDocumento">enum "Sii Tipo Documento".</param>
+    /// <param name="OrigenDocumento">Enum "Sii Origen Documento".</param>
+    /// <param name="NoDocumento">Code[20].</param>
+    /// <param name="TextoError">VAR Text[250].</param>
+    /// <returns>Return variable HayError of type Boolean.</returns>
+    procedure CamposObligatorios(TipoDocumento: enum "Sii Tipos Documento"; OrigenDocumento: Enum "Sii Origen Documento"; NoDocumento: Code[20]; var TextoError: Text[250]) HayError: Boolean
     var
         RecDatosSIIDocumento: Record "SII- Datos documento";
         RecCab: Integer;
@@ -3521,39 +3534,39 @@ table 50600 "SII- Tablas valores SII"
             RecConfigDatos.SETRANGE(RecConfigDatos."Informar en documento", RecConfigDatos."Informar en documento"::Expedido)
         ELSE
             RecConfigDatos.SETRANGE(RecConfigDatos."Informar en documento", RecConfigDatos."Informar en documento"::Recibido);
-        IF TipoDocumento IN [0, 13] THEN
+        IF TipoDocumento.AsInteger() IN [0, 13] THEN
             RecConfigDatos.SETRANGE(RecConfigDatos."Tipo de documento", RecConfigDatos."Tipo de documento"::Facturas);
-        IF TipoDocumento IN [1, 14] THEN
+        IF TipoDocumento.AsInteger() IN [1, 14] THEN
             RecConfigDatos.SETRANGE(RecConfigDatos."Tipo de documento", RecConfigDatos."Tipo de documento"::Abonos);
         IF RecConfigDatos.FINDSET THEN
             REPEAT  // Por cada Obligatorio configurado en el maestro , localizar el mismo dato en el documento.
 
                 RecDatosSIIDocumento.RESET;
                 CASE TRUE OF
-                    OrigenDocumento = 0: // Ventas
+                    OrigenDocumento.AsInteger() = 0: // Ventas
                         BEGIN
                             CASE TRUE OF
-                                TipoDocumento = 0:
+                                TipoDocumento.AsInteger() = 0:
                                     RecDatosSIIDocumento.SETRANGE("Tipo documento", RecDatosSIIDocumento."Tipo documento"::"Factura emitida reg.");
-                                TipoDocumento = 1:
+                                TipoDocumento.AsInteger() = 1:
                                     RecDatosSIIDocumento.SETRANGE("Tipo documento", RecDatosSIIDocumento."Tipo documento"::"Abono emitido reg.");
-                                TipoDocumento = 2:
+                                TipoDocumento.AsInteger() = 2:
                                     ;
-                                TipoDocumento = 13:
+                                TipoDocumento.AsInteger() = 13:
                                     RecDatosSIIDocumento.SETRANGE("Tipo documento", RecDatosSIIDocumento."Tipo documento"::"Srv Factura reg.");
-                                TipoDocumento = 14:
+                                TipoDocumento.AsInteger() = 14:
                                     RecDatosSIIDocumento.SETRANGE("Tipo documento", RecDatosSIIDocumento."Tipo documento"::"Srv Abono reg.");
 
                             END;
                         END;
-                    OrigenDocumento = 1: // Compras
+                    OrigenDocumento.AsInteger() = 1: // Compras
                         BEGIN
                             CASE TRUE OF
-                                TipoDocumento = 0:
+                                TipoDocumento.AsInteger() = 0:
                                     RecDatosSIIDocumento.SETRANGE("Tipo documento", RecDatosSIIDocumento."Tipo documento"::"Factura recibida reg.");
-                                TipoDocumento = 1:
+                                TipoDocumento.AsInteger() = 1:
                                     RecDatosSIIDocumento.SETRANGE("Tipo documento", RecDatosSIIDocumento."Tipo documento"::"Abono recibido reg.");
-                                TipoDocumento = 2:
+                                TipoDocumento.AsInteger() = 2:
                                     ;
                             END;
                         END;
@@ -3808,11 +3821,19 @@ table 50600 "SII- Tablas valores SII"
     end;
 
 
+    /// <summary>
+    /// ChequeosConfigIVA.
+    /// </summary>
+    /// <param name="TipoDocumento">Integer.</param>
+    /// <param name="Venta-Compra">Option Venta,Compra.</param>
+    /// <param name="NoDocumento">Code[20].</param>
+    /// <param name="TextoMensajeError">VAR Text[250].</param>
+    /// <returns>Return variable HayError of type Boolean.</returns>
     procedure ChequeosConfigIVA(TipoDocumento: Integer; "Venta-Compra": Option Venta,Compra; NoDocumento: Code[20]; var TextoMensajeError: Text[250]) HayError: Boolean
     var
         RecConfigDatosIVA: Record "SII- Config. múltiple";
-        RecLInVta: Record "37";
-        RecLinCompra: Record "39";
+        RecLInVta: Record 37;
+        RecLinCompra: Record 39;
     begin
 
         // TipoDocumento= 0:Factura, 1:Abono, 2:B.I.
@@ -3917,19 +3938,19 @@ table 50600 "SII- Tablas valores SII"
     var
         RecConfigMultipleSII: Record "SII- Config. múltiple";
         NoBusquesMas: Boolean;
-        RecFraVta: Record "112";
-        RecLinFraVta: Record "113";
-        RecAboVta: Record "114";
-        RecLinAboVta: Record "115";
-        RecFraCompra: Record "122";
-        RecLinFraCompra: Record "123";
-        RecAboCompra: Record "124";
-        RecLinAboCompra: Record "125";
+        RecFraVta: Record 112;
+        RecLinFraVta: Record 113;
+        RecAboVta: Record 114;
+        RecLinAboVta: Record 115;
+        RecFraCompra: Record 122;
+        RecLinFraCompra: Record 123;
+        RecAboCompra: Record 124;
+        RecLinAboCompra: Record 125;
         "---------- Servicios---------": Integer;
-        RecFraServ: Record "5992";
-        RecLinFraServ: Record "5993";
-        RecAboServ: Record "5994";
-        RecLinAboServ: Record "5995";
+        RecFraServ: Record 5992;
+        RecLinFraServ: Record 5993;
+        RecAboServ: Record 5994;
+        RecLinAboServ: Record 5995;
     begin
         // Busca entre las líneas del documento si hay alguna con configuración de IVA marcada como
         // "Excluir envio SII"
@@ -4241,7 +4262,38 @@ table 50600 "SII- Tablas valores SII"
         lRstConfMul.SETRANGE("Dato SII a exportar como", lDatoSII);
         IF lRstConfMul.FINDFIRST THEN BEGIN
             lRstDatosDoc.INIT;
-            lRstDatosDoc."Tipo documento" := lTipoDoc - 1; //Orden de option igual a ltipodoc menos uno.
+            Case lTipoDoc of
+                1:
+                    lRstDatosDoc."Tipo documento" := lRstDatosDoc."Tipo documento"::"Factura emitida";
+                2:
+                    lRstDatosDoc."Tipo documento" := lRstDatosDoc."Tipo documento"::"Abono emitido";
+                3:
+                    lRstDatosDoc."Tipo documento" := lRstDatosDoc."Tipo documento"::"Factura emitida reg.";
+                4:
+                    lRstDatosDoc."Tipo documento" := lRstDatosDoc."Tipo documento"::"Abono emitido reg.";
+                5:
+                    lRstDatosDoc."Tipo documento" := lRstDatosDoc."Tipo documento"::"Factura recibida";
+                6:
+                    lRstDatosDoc."Tipo documento" := lRstDatosDoc."Tipo documento"::"Abono recibido";
+                7:
+                    lRstDatosDoc."Tipo documento" := lRstDatosDoc."Tipo documento"::"Factura recibida reg.";
+                8:
+                    lRstDatosDoc."Tipo documento" := lRstDatosDoc."Tipo documento"::"Abono recibido reg.";
+                9:
+                    lRstDatosDoc."Tipo documento" := lRstDatosDoc."Tipo documento"::BI;
+                10:
+                    lRstDatosDoc."Tipo documento" := lRstDatosDoc."Tipo documento"::"Srv pedido";
+                11:
+                    lRstDatosDoc."Tipo documento" := lRstDatosDoc."Tipo documento"::"Srv Factura";
+                12:
+                    lRstDatosDoc."Tipo documento" := lRstDatosDoc."Tipo documento"::"Srv Abono";
+                13:
+                    lRstDatosDoc."Tipo documento" := lRstDatosDoc."Tipo documento"::"Srv Factura reg.";
+                14:
+                    lRstDatosDoc."Tipo documento" := lRstDatosDoc."Tipo documento"::"Srv Abono reg.";
+
+            end;
+            //lRstDatosDoc."Tipo documento" :=  lTipoDoc - 1; //Orden de option igual a ltipodoc menos uno.
             lRstDatosDoc."No. Documento" := lNumDoc;
             lRstDatosDoc."Dato SII" := lRstConfMul."Nombre dato SII";
             lRstDatosDoc."Valor dato SII" := lValor;
@@ -4256,6 +4308,11 @@ table 50600 "SII- Tablas valores SII"
     end;
 
 
+    /// <summary>
+    /// InsertaContraparte.
+    /// </summary>
+    /// <param name="Tipo">Integer.</param>
+    /// <param name="Código">Code[20].</param>
     procedure InsertaContraparte(Tipo: Integer; "Código": Code[20])
     var
         RecConfigMultipleContrapartes: Record "SII- Config. múltiple";
@@ -4396,13 +4453,13 @@ table 50600 "SII- Tablas valores SII"
 
     procedure ChequeosPorDocumento(TipoDocumento: Integer; "Venta-Compra": Option Venta,Compra; NoDocumento: Code[20]; var TextoMensajeError: Text[250]) ExisteError: Boolean
     var
-        RecCabVta: Record "36";
-        RecCabCompra: Record "38";
-        RecCabVtaServ: Record "5900";
+        RecCabVta: Record 36;
+        RecCabCompra: Record 38;
+        RecCabVtaServ: Record 5900;
         RecDatosSIIDocumento: Record "SII- Datos documento";
         TipoDocDatoSII: Integer;
         ComprobarReglasNegocio: Boolean;
-        RecLinCompra: Record "39";
+        RecLinCompra: Record 39;
         RecConfigDatosIVA: Record "SII- Config. múltiple";
         ExisteLineaDUA: Boolean;
         FormatoFechaOk: Date;
@@ -4668,10 +4725,10 @@ table 50600 "SII- Tablas valores SII"
     end;
 
 
-    procedure AgruparImpuestos(var Loc_RecDocsSIIaProcesar: Record "50601"; var Tmp_DocsSIIaProcesar: Record "50601" temporary; CambiarEstado: Boolean)
+    procedure AgruparImpuestos(var Loc_RecDocsSIIaProcesar: Record 50601; var Tmp_DocsSIIaProcesar: Record 50601 temporary; CambiarEstado: Boolean)
     var
         NLinea: Integer;
-        RecConfigCont: Record "98";
+        RecConfigCont: Record 98;
         PrecisionRedondeo: Decimal;
         TipoRedondeo: Text[1];
     begin
@@ -4743,29 +4800,32 @@ table 50600 "SII- Tablas valores SII"
 
         IF Tmp_DocsSIIaProcesar.FINDSET THEN
             REPEAT
-                WITH Tmp_DocsSIIaProcesar DO BEGIN
-                    // AHG
-                    IF "Base imponible no exenta" <> 0 THEN BEGIN
-                        IF "Tipo impositivo no exenta" <> 0 THEN
-                            "Cuota imp. no exenta" := ROUND(("Base imponible no exenta" * ("Tipo impositivo no exenta" / 100)) + "IVA Diferencia",
-                             RecConfigCont."Amount Rounding Precision", TipoRedondeo);
-                        IF "Tipo RE no exenta" <> 0 THEN
-                            "Cuota RE no exenta" := ROUND(("Base imponible no exenta" * ("Tipo RE no exenta" / 100)) + "RE Diferencia",
-                             RecConfigCont."Amount Rounding Precision", TipoRedondeo);
-                        IF "% Compensación REAGYP" <> 0 THEN
-                            "Importe Compensación REAGYP" := ROUND(("Base imponible no exenta" * ("% Compensación REAGYP" / 100)) + "IVA Diferencia",
-                             RecConfigCont."Amount Rounding Precision", TipoRedondeo);
-                    END;
-
-                    "Base imponible no sujeta" := ROUND("Base imponible no sujeta", RecConfigCont."Amount Rounding Precision", TipoRedondeo);
-                    "Base Imponible exenta" := ROUND("Base Imponible exenta", RecConfigCont."Amount Rounding Precision", TipoRedondeo);
-                    "Base imponible no exenta" := ROUND("Base imponible no exenta", RecConfigCont."Amount Rounding Precision", TipoRedondeo);
-
-                    "Importe no sujeta Art. 7,14" := ROUND("Importe no sujeta Art. 7,14", RecConfigCont."Amount Rounding Precision", TipoRedondeo);
-                    "Importe no sujeta localización" := ROUND("Importe no sujeta localización", RecConfigCont."Amount Rounding Precision", TipoRedondeo);
-
-                    MODIFY;
+                //WITH Tmp_DocsSIIaProcesar DO BEGIN
+                // AHG
+                IF Tmp_DocsSIIaProcesar."Base imponible no exenta" <> 0 THEN BEGIN
+                    IF Tmp_DocsSIIaProcesar."Tipo impositivo no exenta" <> 0 THEN
+                        Tmp_DocsSIIaProcesar."Cuota imp. no exenta" := ROUND((Tmp_DocsSIIaProcesar."Base imponible no exenta" *
+                        (Tmp_DocsSIIaProcesar."Tipo impositivo no exenta" / 100)) + Tmp_DocsSIIaProcesar."IVA Diferencia",
+                         RecConfigCont."Amount Rounding Precision", TipoRedondeo);
+                    IF Tmp_DocsSIIaProcesar."Tipo RE no exenta" <> 0 THEN
+                        Tmp_DocsSIIaProcesar."Cuota RE no exenta" := ROUND((Tmp_DocsSIIaProcesar."Base imponible no exenta"
+                        * (Tmp_DocsSIIaProcesar."Tipo RE no exenta" / 100)) + Tmp_DocsSIIaProcesar."RE Diferencia",
+                         RecConfigCont."Amount Rounding Precision", TipoRedondeo);
+                    IF Tmp_DocsSIIaProcesar."% Compensación REAGYP" <> 0 THEN
+                        Tmp_DocsSIIaProcesar."Importe Compensación REAGYP" := ROUND((Tmp_DocsSIIaProcesar."Base imponible no exenta"
+                        * (Tmp_DocsSIIaProcesar."% Compensación REAGYP" / 100)) + Tmp_DocsSIIaProcesar."IVA Diferencia",
+                         RecConfigCont."Amount Rounding Precision", TipoRedondeo);
                 END;
+
+                Tmp_DocsSIIaProcesar."Base imponible no sujeta" := ROUND(Tmp_DocsSIIaProcesar."Base imponible no sujeta", RecConfigCont."Amount Rounding Precision", TipoRedondeo);
+                Tmp_DocsSIIaProcesar."Base Imponible exenta" := ROUND(Tmp_DocsSIIaProcesar."Base Imponible exenta", RecConfigCont."Amount Rounding Precision", TipoRedondeo);
+                Tmp_DocsSIIaProcesar."Base imponible no exenta" := ROUND(Tmp_DocsSIIaProcesar."Base imponible no exenta", RecConfigCont."Amount Rounding Precision", TipoRedondeo);
+
+                Tmp_DocsSIIaProcesar."Importe no sujeta Art. 7,14" := ROUND(Tmp_DocsSIIaProcesar."Importe no sujeta Art. 7,14", RecConfigCont."Amount Rounding Precision", TipoRedondeo);
+                Tmp_DocsSIIaProcesar."Importe no sujeta localización" := ROUND(Tmp_DocsSIIaProcesar."Importe no sujeta localización", RecConfigCont."Amount Rounding Precision", TipoRedondeo);
+
+                Tmp_DocsSIIaProcesar.MODIFY;
+            // END;
             UNTIL Tmp_DocsSIIaProcesar.NEXT = 0;
     end;
 
@@ -4779,14 +4839,21 @@ table 50600 "SII- Tablas valores SII"
     end;
 
 
-    procedure ExcluirLinea(Tipo: Option " ",Cuenta,Producto,Recurso,"Activo fijo","Cargo (prod.)"; No: Code[20]): Boolean
+
+    /// <summary>
+    /// ExcluirLinea.
+    /// </summary>
+    /// <param name="Tipo">Enum "Service Line Type".</param>
+    /// <param name="No">Code[20].</param>
+    /// <returns>Return value of type Boolean.</returns>
+    procedure ExcluirLinea(Tipo: Enum "Service Line Type"; No: Code[20]): Boolean
     var
-        RecCuenta: Record "15";
+        RecCuenta: Record 15;
     begin
         // Si se trata de Cuenta, y no tiene marcado "Excluir SII", devolverá False.
 
         CASE Tipo OF
-            Tipo::Cuenta:
+            Tipo::"G/L Account":
                 BEGIN
                     IF RecCuenta.GET(No) THEN
                         EXIT(RecCuenta."Excluir SII");
@@ -4798,7 +4865,13 @@ table 50600 "SII- Tablas valores SII"
     end;
 
 
-    procedure PermitirModificarDoc(lEstado: Option " ","Pendiente procesar","Incluido en fichero","Enviado a plataforma",Incidencias,"Obtener de nuevo","Validado AEAT"; lError: Boolean): Boolean
+    /// <summary>
+    /// PermitirModificarDoc.
+    /// </summary>
+    /// <param name="lEstado">enum "SII Estado documento".</param>
+    /// <param name="lError">Boolean.</param>
+    /// <returns>Return value of type Boolean.</returns>
+    procedure PermitirModificarDoc(lEstado: enum "SII Estado documento"; lError: Boolean): Boolean
     begin
         IF NOT (lEstado IN [lEstado::" ", lEstado::"Obtener de nuevo"]) THEN
             IF lError THEN
@@ -4809,17 +4882,17 @@ table 50600 "SII- Tablas valores SII"
         EXIT(TRUE);
     end;
 
-    local procedure CrearDocumentoSII_DUA(var RecDocSIICabeceraDUAProveedor: Record "50601"; CodDivisa: Code[20]; FactorDivisa: Decimal)
+    local procedure CrearDocumentoSII_DUA(var RecDocSIICabeceraDUAProveedor: Record 50601; CodDivisa: Code[20]; FactorDivisa: Decimal)
     var
-        RecDatosSIIDetallesOrigen: Record "50601";
-        RecDatosSIIDetallesDestino: Record "50601";
+        RecDatosSIIDetallesOrigen: Record 50601;
+        RecDatosSIIDetallesDestino: Record 50601;
         NoLinea: Integer;
-        RecNuevoDocSIIDUACabecera: Record "50601";
+        RecNuevoDocSIIDUACabecera: Record 50601;
         RecDatosSIIOrigen: Record "SII- Datos documento";
         Decimal: Decimal;
-        RecConfigEmpresaSII: Record "50605";
+        RecConfigEmpresaSII: Record 50605;
         AcumuladoBase: Decimal;
-        RecConfigContabilidad: Record "98";
+        RecConfigContabilidad: Record 98;
         TipoImpositivoDUA: Decimal;
     begin
 
@@ -4947,11 +5020,11 @@ table 50600 "SII- Tablas valores SII"
     procedure SubirFTPNoSeguro()
     var
         v_fichero: File;
-        mFile: Record "2000000022";
+        mFile: Record 2000000022;
         Listado: File;
         Archivo: Text[1024];
-        RecDocumentosSII: Record "50601";
-        RecDocumentosSII2: Record "50601";
+        RecDocumentosSII: Record 50601;
+        RecDocumentosSII2: Record 50601;
         process: DotNet Process;
     begin
         Pt_InfoEmpresa.GET;
@@ -5033,11 +5106,11 @@ table 50600 "SII- Tablas valores SII"
 
     procedure ModificarFacturaSimplificada(TipoDocumento: Integer; NoDocumento: Code[20]; DesdeTicket: Code[20]; HastaTicket: Code[20]; Agrupar: Boolean; JnTemplate: Code[10]; JnlBatch: Code[10])
     var
-        RecTablaMaestraValores: Recor "SII- Tablas valores SII";
+        RecTablaMaestraValores: Record "SII- Tablas valores SII";
         RecConfigDatosDocumento: Record "SII- Config. múltiple";
         RecDatosDocumento: Record "SII- Datos documento";
-        GnJnLine: Record "81";
-        ConfCont: Record "98";
+        GnJnLine: Record 81;
+        ConfCont: Record 98;
     begin
         /*
         TipoFactura                        F4
@@ -5178,6 +5251,11 @@ table 50600 "SII- Tablas valores SII"
     end;
 
 
+    /// <summary>
+    /// Ascii2UTF8.
+    /// </summary>
+    /// <param name="lTxt">Text[1024].</param>
+    /// <returns>Return value of type Text[1024].</returns>
     procedure Ascii2UTF8(lTxt: Text[1024]): Text[1024]
     var
         lArrS: array[24] of Text[1];
@@ -5239,7 +5317,7 @@ table 50600 "SII- Tablas valores SII"
 
     local procedure ProcesarRespuestaAEAT(vPath: Text; vPathhistorico: Text; tipo: Boolean)
     var
-        recControlSIIDocumentos: Record "50601";
+        recControlSIIDocumentos: Record 50601;
         InTextIncidencias: Text;
         respuestaAEAT: File;
         txtField: Text[300];
@@ -5254,8 +5332,8 @@ table 50600 "SII- Tablas valores SII"
         lPosLin: Integer;
         vFin: Boolean;
         vFechaReg: Date;
-        rec_purchheader: Record "122";
-        rec_purchmemoheader: Record "124";
+        rec_purchheader: Record 122;
+        rec_purchmemoheader: Record 124;
     begin
         /*
           //120918 EX-JVN Nueva funcion

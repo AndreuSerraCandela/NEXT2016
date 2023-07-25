@@ -1,3 +1,6 @@
+/// <summary>
+/// Table SII- Cobros-Pagos CC (ID 50604).
+/// </summary>
 table 50604 "SII- Cobros-Pagos CC"
 {
     // EX-SMN 191017 Añado estado documento "Validado AEAT"
@@ -89,17 +92,20 @@ table 50604 "SII- Cobros-Pagos CC"
         RecCCSII: Record "SII- Cobros-Pagos CC";
         RecDocumentosSII: Record "SII- Datos SII Documentos";
     begin
-        WITH RecCCCobroPago DO BEGIN
+        RecCCCobroPago.RESET;
+        RecCCCobroPago.SETRANGE(RecCCCobroPago."Tipo documento", "Tipo documento");
+        RecCCCobroPago.SETRANGE(RecCCCobroPago."No. documento SII", "No. documento SII");
+        IF RecCCCobroPago.FINDFIRST THEN BEGIN
             RecDocumentosSII.RESET;
-            RecDocumentosSII.SETRANGE(RecDocumentosSII."Tipo documento", "Tipo documento");
-            RecDocumentosSII.SETRANGE(RecDocumentosSII."No. documento", "No. documento SII");
+            RecDocumentosSII.SETRANGE(RecDocumentosSII."Tipo documento", RecCCCobroPago."Tipo documento");
+            RecDocumentosSII.SETRANGE(RecDocumentosSII."No. documento", RecCCCobroPago."No. documento SII");
             RecDocumentosSII.SETRANGE(RecDocumentosSII."Tipo registro", RecDocumentosSII."Tipo registro"::Cabecera);
             IF RecDocumentosSII.FINDSET THEN BEGIN
                 RecDocumentosSII."CC Importe Cobrado/Pagado" := 0;
                 RecDocumentosSII.MODIFY;
                 RecCCSII.RESET;
-                RecCCSII.SETRANGE(RecCCSII."Tipo documento", "Tipo documento");
-                RecCCSII.SETRANGE(RecCCSII."No. documento SII", "No. documento SII");
+                RecCCSII.SETRANGE(RecCCSII."Tipo documento", RecCCCobroPago."Tipo documento");
+                RecCCSII.SETRANGE(RecCCSII."No. documento SII", RecCCCobroPago."No. documento SII");
                 IF RecCCSII.FINDSET THEN BEGIN
                     REPEAT
                         RecDocumentosSII."CC Importe Cobrado/Pagado" += RecCCSII.Importe;

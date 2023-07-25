@@ -51,6 +51,11 @@ enum 92003 "Sii Tipos Documento"
     { }
     value(2; "B.I.")
     { }
+    //13:Factura servicios , 14:Abono Servicios
+    value(13; "Factura servicios")
+    { }
+    value(14; "Abono Servicios")
+    { }
 }
 enum 92004 "Sii Origen Documento"
 {
@@ -79,5 +84,30 @@ enum 92005 "Sii Estado Documento"
     value(5; "Obtener de nuevo")
     { }
     value(6; "Validado AEAT")
+    { }
+}
+enum 92006 "Vendor Type"
+{
+    //OptionString = ' ,Nacional,Extranjero,Global'
+    value(0; " ")
+    { }
+    value(1; "Nacional")
+    { }
+    value(2; "Extranjero")
+    { }
+    value(3; "Global")
+    { }
+
+}
+enum 92007 "Operation Type"
+{
+    //OptionString = ' ,PrestadorServicios,Arrendamientio,Otros';
+    value(0; " ")
+    { }
+    value(1; "PrestadorServicios")
+    { }
+    value(2; "Arrendamientio")
+    { }
+    value(3; "Otros")
     { }
 }
